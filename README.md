@@ -17,6 +17,6 @@ python3 train.py
 
 ## Claim
 
-Some of code modifyed base on 
+Paper link: https://dl.acm.org/doi/10.1145/3501409.3501605
 
 No commercial use.
