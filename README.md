@@ -1,4 +1,6 @@
-# Code for the paper "A Self-Adaptive and Multiple Activation Function Neural Network for Facial Expression Recognition"
+# Self Adaptive Activation Function for CNN
+
+Facial Expression Recognition Demo.
 
 Expected to work on Python3 and latest PyTorch.
 
