@@ -29,7 +29,7 @@ def get_files(file_dir,ratio):
         Neture.append(file_dir + 'Neture' + '/' + file)
         labels_Neture.append(1)
     for file in os.listdir(file_dir + 'Happy'):
-        Neture.append(file_dir + 'Happy' + '/' +file)
+        Happy.append(file_dir + 'Happy' + '/' +file)
         labels_Happy.append(2)
     for file in os.listdir(file_dir + 'Anger'):
         Anger.append(file_dir + 'Anger' + '/' +file)
