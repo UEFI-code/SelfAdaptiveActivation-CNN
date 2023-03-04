@@ -2,9 +2,7 @@ import torch
 from torch.utils.data import Dataset,DataLoader
 import cv2
 import os
-from tqdm import tqdm
 from config import config
-from glob import glob
 import os
 from torchvision import transforms
 import numpy as np
@@ -38,7 +36,7 @@ def get_files(file_dir,ratio):
     labels_list = np.hstack((labels_Surprise, labels_Neture, labels_Happy, labels_Anger))
     temp = np.array([image_list, labels_list]).transpose()
     np.random.shuffle(temp)
-    n_test = int(math.ceil(len(temp) * ratio))
+    n_test = int(len(temp) * ratio)
     test_data = temp[0:n_test,:]
     train_data = temp[n_test:-1,:]
     return test_data,train_data
