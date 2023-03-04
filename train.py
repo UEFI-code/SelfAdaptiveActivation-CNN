@@ -5,7 +5,6 @@ import os
 from config import config
 import Model
 from torch import optim,nn
-from torch.autograd import Variable
 from torch.utils.data import DataLoader
 from datasets import *
 from test import *
@@ -58,8 +57,8 @@ if __name__ == '__main__' :
         loss_epoch = 0
         for index,(input,target) in enumerate(train_loader):
             model.train()
-            input = Variable(input).cuda()
-            target = Variable(torch.from_numpy(np.array(target)).long()).cuda()
+            input = input.cuda()
+            target = torch.tensor(target).cuda()
             output = model(input)
             loss = criterion(output,target)
             optimizer.zero_grad()
@@ -67,7 +66,7 @@ if __name__ == '__main__' :
             optimizer.step()
             loss_epoch += loss.item()
             if (index+1) % 10 == 0:
-                print("Epoch: {} [{:>3d}/{}]\t Loss: {:.6f} ".format(epoch+1,index*config.batch_size,len(train_loader.dataset),loss.item()))
+                print("Epoch: {} [{:>3d}/{}]\t Loss: {:.6f} ".format(epoch+1,index*config.batch_size,len(train_loader.dataset),loss_epoch/index))
         if (epoch+1) % 1 ==0:
             print("\n------ Evaluate ------")
             model.eval()
