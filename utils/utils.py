@@ -5,12 +5,11 @@ import shutil
 
 def save_checkpoint(state, save_model):
     filename = config.weights + config.model_name + ".pth"
-    torch.save(state, filename)
     if save_model:
-        message = config.weights + config.model_name+ '.pth'
-        print("Get Better top1 : %s saving weights to %s"%(state["accTop1"],message))
+        torch.save(state, filename)
+        print("Get Better top1 : %s saving weights to %s"%(state["accTop1"], filename))
         with open("./logs/%s.txt"%config.model_name,"a") as f:
-            print("Get Better top1 : %s saving weights to %s"%(state["accTop1"],message),file=f)
+            print("Get Better top1 : %s saving weights to %s"%(state["accTop1"], filename),file=f)
 
 def accuracy(output,target,topk = (1, 5)):
     maxk = max(topk)
