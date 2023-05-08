@@ -12,29 +12,21 @@ from PIL import Image
 import math
 
 def get_files(file_dir,ratio):
-    Surprise = []
-    labels_Surprise = []
-    Neture = []
-    labels_Neture = []
-    Happy = []
-    labels_Happy=[]
-    Anger = []
-    labels_Anger = []
+    Images = []
+    Labels = []
     for file  in os.listdir(file_dir +'Surprise'):
-        Surprise.append(file_dir + 'Surprise' + '/' + file)
-        labels_Surprise.append(0)
+        Images.append(file_dir + 'Surprise' + '/' + file)
+        Labels.append(0)
     for file in os.listdir(file_dir + 'Neture'):
-        Neture.append(file_dir + 'Neture' + '/' + file)
-        labels_Neture.append(1)
+        Images.append(file_dir + 'Neture' + '/' + file)
+        Labels.append(1)
     for file in os.listdir(file_dir + 'Happy'):
-        Happy.append(file_dir + 'Happy' + '/' +file)
-        labels_Happy.append(2)
+        Images.append(file_dir + 'Happy' + '/' +file)
+        Labels.append(2)
     for file in os.listdir(file_dir + 'Anger'):
-        Anger.append(file_dir + 'Anger' + '/' +file)
-        labels_Anger.append(3)
-    image_list = np.hstack((Surprise ,Neture, Happy, Anger))
-    labels_list = np.hstack((labels_Surprise, labels_Neture, labels_Happy, labels_Anger))
-    temp = np.array([image_list, labels_list]).transpose()
+        Images.append(file_dir + 'Anger' + '/' +file)
+        Labels.append(3)
+    temp = np.array([Images, Labels]).transpose()
     np.random.shuffle(temp)
     n_test = int(len(temp) * ratio)
     test_data = temp[0:n_test,:]
