@@ -31,14 +31,11 @@ if __name__ == '__main__' :
         optimizer.load_state_dict(checkpoint["optimizer"])
 
     transform = transforms.Compose([
-                                    transforms.RandomResizedCrop(90),
                                     transforms.ColorJitter(0.05, 0.05, 0.05),
                                     transforms.RandomRotation(30),
                                     transforms.RandomGrayscale(p = 0.5),
                                     transforms.Resize((config.img_width, config.img_height)),
-                                    transforms.ToTensor(),
-                                    transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                                         std=[0.229, 0.224, 0.225])])
+                                    transforms.ToTensor()])
 
     _, train_list = get_files(config.data_folder, config.ratio)
     input_data = datasets(train_list, transform = transform)
