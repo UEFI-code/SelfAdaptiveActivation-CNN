@@ -3,7 +3,6 @@ from torch.utils.data import Dataset
 import cv2
 import os
 from config import config
-import os
 from torchvision import transforms
 import numpy as np
 from PIL import Image
