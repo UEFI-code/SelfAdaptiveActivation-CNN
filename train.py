@@ -1,6 +1,4 @@
-import numpy as np
 import torch
-import torchvision
 import os
 from config import config
 import Model

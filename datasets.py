@@ -1,15 +1,12 @@
 import torch
-from torch.utils.data import Dataset,DataLoader
+from torch.utils.data import Dataset
 import cv2
 import os
 from config import config
 import os
 from torchvision import transforms
 import numpy as np
-import random
-from shutil import copy
 from PIL import Image
-import math
 
 def get_files(file_dir,ratio):
     Images = []
@@ -35,8 +32,6 @@ def get_files(file_dir,ratio):
 
 class datasets(Dataset):
     def __init__(self,data,transform = None,test = False):
-        imgs = []
-        labels = []
         self.test = test
         self.data = data.transpose()
         self.len = len(data)
