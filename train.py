@@ -54,7 +54,7 @@ if __name__ == '__main__' :
         for index,(input,target) in enumerate(train_loader):
             model.train()
             input = input.cuda()
-            target = torch.tensor(target).cuda()
+            target = target.cuda()
             output = model(input)
             loss = criterion(output,target)
             optimizer.zero_grad()
