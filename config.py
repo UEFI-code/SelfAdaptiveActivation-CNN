@@ -1,6 +1,5 @@
-#可以根据自己的情况进行修改
 class MyConfigs():
-    data_folder = '/DataSet/train/'
+    data_folder = 'D:/fer2013/'
     num_worker = 4
     model_name = "savemodel" 
     weights = "./checkpoints/"
@@ -14,4 +13,4 @@ class MyConfigs():
     lr_decay = 0.000001
     weight_decay = 2e-4
     ratio = 0.3
-config = MyConfigs()
+    classes = ['Surprise','Neture','Happy','Anger']
