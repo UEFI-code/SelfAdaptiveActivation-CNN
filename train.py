@@ -22,10 +22,11 @@ if __name__ == '__main__' :
 
     start_epoch = 0
     current_accuracy = 0
-    resume = False
+    resume = os.path.exists(MyConfigs.weights + MyConfigs.model_name+'.pth')
     if resume:
         checkpoint = torch.load(MyConfigs.weights + MyConfigs.model_name+'.pth')
         start_epoch = checkpoint["epoch"]
+        current_accuracy = checkpoint["accTop1"]
         model.load_state_dict(checkpoint["state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer"])
 
