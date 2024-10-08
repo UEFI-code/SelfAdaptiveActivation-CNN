@@ -71,9 +71,6 @@ if __name__ == '__main__' :
             train_loss.append(loss_epoch/len(train_loader))
             print("Test_epoch: {} Test_accuracy: {:.4}% Test_Loss: {:.6f}".format(epoch+1,accTop1,test_loss1))
             save_model = accTop1 > current_accuracy
-            accTop1 = max(current_accuracy,accTop1)
-            current_accuracy = accTop1
-            print("Best Accu = %f" % current_accuracy)
             save_checkpoint({
                 "epoch": epoch + 1,
                 "model_name": MyConfigs.model_name,
@@ -81,3 +78,5 @@ if __name__ == '__main__' :
                 "accTop1": current_accuracy,
                 "optimizer": optimizer.state_dict(),
             }, save_model)
+            if save_model:
+                current_accuracy = accTop1
