@@ -37,10 +37,9 @@ if __name__ == '__main__' :
                                     transforms.RandomHorizontalFlip(),])
 
     _, train_list = get_files(MyConfigs.data_folder, MyConfigs.ratio)
-    input_data = datasets(train_list, transform = transform, bigRAM=False)
-    train_loader = DataLoader(input_data, batch_size = MyConfigs.batch_size, shuffle = True, collate_fn = collate_fn, pin_memory = False, num_workers = MyConfigs.num_worker)
+    train_loader = DataLoader(datasets(train_list, transform = transform, bigRAM=False), batch_size = MyConfigs.batch_size, shuffle = True, pin_memory = False, num_workers = MyConfigs.num_worker)
     test_list, _ = get_files(MyConfigs.data_folder, MyConfigs.ratio)
-    test_loader = DataLoader(datasets(test_list, transform = None, bigRAM=False), batch_size= MyConfigs.batch_size, shuffle = False, collate_fn = collate_fn, num_workers = MyConfigs.num_worker)
+    test_loader = DataLoader(datasets(test_list, transform = None, bigRAM=False), batch_size= MyConfigs.batch_size, shuffle = False, num_workers = MyConfigs.num_worker)
     train_loss = []
     acc = []
     test_loss = []
