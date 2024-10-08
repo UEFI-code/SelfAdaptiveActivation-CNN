@@ -1,15 +1,12 @@
 import torch
 import cv2
 import torch
-from torch.utils.data import DataLoader
-from torch import nn ,optim
+from torch import nn
 from torch.autograd import Variable
-from config import config
+from config import MyConfigs
 from datasets import *
-import Model
 from utils.utils import accuracy
-classes= {0:"Surprise",1:"Neture",2:"Happy",3:"Angry"}
-import os
+
 def evaluate(test_loader,model,criterion):
     sum = 0
     test_loss_sum = 0
@@ -32,15 +29,15 @@ def evaluate(test_loader,model,criterion):
 
 def test(test_loader,model):
     model.eval()
-    predict_file = open("%s.txt" % config.model_name, 'w')
+    predict_file = open("%s.txt" % MyConfigs.model_name, 'w')
     for i, (input,filename) in enumerate(tqdm(test_loader)):
         y_pred = model(input)
         smax = nn.Softmax(1)
         smax_out = smax(y_pred)
         pred_label = np.argmax(smax_out.cpu().data.numpy())
-        predict_file.write(filename[0]+', ' +classes[pred_label]+'\n')
+        predict_file.write(filename[0]+', ' + MyConfigs.classes[pred_label]+'\n')
 
-def test_one_image(image,model,index):
+def test_one_image(image,model):
     model.eval()
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image = cv2.resize(image, (96,96))
@@ -51,4 +48,4 @@ def test_one_image(image,model,index):
     smax = nn.Softmax()
     smax_out = smax(y_pred)
     pred_label = np.argmax(smax_out.cpu().data.numpy())
- 
+    print(MyConfigs.classes[pred_label])
