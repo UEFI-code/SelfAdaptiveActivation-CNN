@@ -1,14 +1,12 @@
-from config import config
+from config import MyConfigs
 import torch
-import os
-import shutil
 
 def save_checkpoint(state, save_model):
-    filename = config.weights + config.model_name + ".pth"
+    filename = MyConfigs.weights + MyConfigs.model_name + ".pth"
     if save_model:
         torch.save(state, filename)
         print("Get Better top1 : %s saving weights to %s"%(state["accTop1"], filename))
-        with open("./logs/%s.txt"%config.model_name,"a") as f:
+        with open("./logs/%s.txt" % MyConfigs.model_name,"a") as f:
             print("Get Better top1 : %s saving weights to %s"%(state["accTop1"], filename),file=f)
 
 def accuracy(output,target,topk = (1, 5)):
