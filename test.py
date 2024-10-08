@@ -13,10 +13,9 @@ def evaluate(test_loader,model,criterion):
     test_top1_sum = 0
     model.eval()
 
-    for ims, label in test_loader:
-        input_test = Variable(ims).cuda()
-        target_test = Variable(torch.from_numpy(np.array(label)).long()).cuda()
-        output_test = model(input_test)
+    for img, label in test_loader:
+        target_test = torch.tensor(label).cuda()
+        output_test = model(img.cuda())
         loss = criterion(output_test, target_test)
         top1_test = accuracy(output_test, target_test, topk=(1,))
         sum += 1
@@ -26,26 +25,17 @@ def evaluate(test_loader,model,criterion):
     avg_top1 = test_top1_sum / sum
     return avg_loss, avg_top1
 
-
 def test(test_loader,model):
     model.eval()
     predict_file = open("%s.txt" % MyConfigs.model_name, 'w')
-    for i, (input,filename) in enumerate(tqdm(test_loader)):
-        y_pred = model(input)
-        smax = nn.Softmax(1)
-        smax_out = smax(y_pred)
-        pred_label = np.argmax(smax_out.cpu().data.numpy())
-        predict_file.write(filename[0]+', ' + MyConfigs.classes[pred_label]+'\n')
+    for input,filename in tqdm(test_loader):
+        y_pred = model(input).argmax().item()
+        predict_file.write(filename[0]+', ' + MyConfigs.classes[y_pred]+'\n')
 
 def test_one_image(image,model):
     model.eval()
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image = cv2.resize(image, (96,96))
-    img = transforms.ToTensor()(image)
-    img = img.unsqueeze(0)
-    img = Variable(img)
-    y_pred = model(img)
-    smax = nn.Softmax()
-    smax_out = smax(y_pred)
-    pred_label = np.argmax(smax_out.cpu().data.numpy())
-    print(MyConfigs.classes[pred_label])
+    image = cv2.resize(image, (MyConfigs.img_width, MyConfigs.img_height))
+    image = torch.tensor(image).permute(2,0,1).unsqueeze(0).cuda() / 255.0
+    y = model(image).argmax().item()
+    return MyConfigs.classes[y]
