@@ -67,17 +67,15 @@ if __name__ == '__main__' :
             print("\n------ Evaluate ------")
             model.eval()
             test_loss1, accTop1 = evaluate(test_loader,model,criterion)
-            acc.append(accTop1)
-            test_loss.append(test_loss1)
-            train_loss.append(loss_epoch/len(train_loader))
             print("Test_epoch: {} Test_accuracy: {:.4}% Test_Loss: {:.6f}".format(epoch+1,accTop1,test_loss1))
             save_model = accTop1 > current_accuracy
             save_checkpoint({
                 "epoch": epoch + 1,
                 "model_name": MyConfigs.model_name,
                 "state_dict": model.state_dict(),
-                "accTop1": current_accuracy,
+                "accTop1": accTop1,
                 "optimizer": optimizer.state_dict(),
             }, save_model)
             if save_model:
                 current_accuracy = accTop1
+            print("Best Accu = %f" % current_accuracy)
