@@ -11,24 +11,17 @@ def evaluate(test_loader,model,criterion):
     test_top1_sum = 0
     model.eval()
 
-    for img, label in test_loader:
+    for img, label in tqdm(test_loader):
         target_test = torch.tensor(label).cuda()
         y = model(img.cuda())
         loss = criterion(y, target_test)
+        test_loss_sum += loss.cpu().item()
         top1_test = accuracy(y, target_test, topk=(1,))
+        test_top1_sum += top1_test[0][0].cpu().item()
         sum += 1
-        test_loss_sum += loss.data.cpu().numpy()
-        test_top1_sum += top1_test[0].cpu().numpy()[0]
     avg_loss = test_loss_sum / sum
     avg_top1 = test_top1_sum / sum
     return avg_loss, avg_top1
-
-def test(test_loader,model):
-    model.eval()
-    predict_file = open("%s.txt" % MyConfigs.model_name, 'w')
-    for input,filename in tqdm(test_loader):
-        y_pred = model(input).argmax().item()
-        predict_file.write(filename[0]+', ' + MyConfigs.classes[y_pred]+'\n')
 
 def test_one_image(image,model):
     model.eval()
