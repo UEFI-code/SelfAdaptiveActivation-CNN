@@ -56,14 +56,6 @@ class datasets(Dataset):
     def __len__(self):
         return self.len
 
-def collate_fn(batch):
-    imgs = []
-    label = []
-    for i in batch:
-      imgs.append(i[0])
-      label.append(i[1])
-    return torch.stack(imgs, 0),label
-
 if __name__ == '__main__':
     test_data,_ = get_files(MyConfigs.data_folder,0.02)
     for i in (test_data):
