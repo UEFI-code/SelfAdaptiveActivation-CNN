@@ -12,11 +12,11 @@ def evaluate(test_loader,model,criterion):
     model.eval()
 
     for img, label in tqdm(test_loader):
-        target_test = torch.tensor(label).cuda()
+        label = label.cuda()
         y = model(img.cuda())
-        loss = criterion(y, target_test)
+        loss = criterion(y, label)
         test_loss_sum += loss.cpu().item()
-        top1_test = accuracy(y, target_test, topk=(1,))
+        top1_test = accuracy(y, label, topk=(1,))
         test_top1_sum += top1_test[0][0].cpu().item()
         sum += 1
     avg_loss = test_loss_sum / sum
