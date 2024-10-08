@@ -2,26 +2,18 @@ import torch
 from torch.utils.data import Dataset
 import cv2
 import os
-from config import config
+from config import MyConfigs
 from torchvision import transforms
 import numpy as np
-from PIL import Image
+from tqdm import tqdm
 
 def get_files(file_dir,ratio):
     Images = []
     Labels = []
-    for file  in os.listdir(file_dir +'Surprise'):
-        Images.append(file_dir + 'Surprise' + '/' + file)
-        Labels.append(0)
-    for file in os.listdir(file_dir + 'Neture'):
-        Images.append(file_dir + 'Neture' + '/' + file)
-        Labels.append(1)
-    for file in os.listdir(file_dir + 'Happy'):
-        Images.append(file_dir + 'Happy' + '/' +file)
-        Labels.append(2)
-    for file in os.listdir(file_dir + 'Anger'):
-        Images.append(file_dir + 'Anger' + '/' +file)
-        Labels.append(3)
+    for i in range(len(MyConfigs.classes)):
+        for file in os.listdir(file_dir + MyConfigs.classes[i]):
+            Images.append(file_dir + MyConfigs.classes[i] + '/' + file)
+            Labels.append(i)
     temp = np.array([Images, Labels]).transpose()
     np.random.shuffle(temp)
     n_test = int(len(temp) * ratio)
@@ -30,40 +22,37 @@ def get_files(file_dir,ratio):
     return test_data,train_data
 
 class datasets(Dataset):
-    def __init__(self,data,transform = None,test = False):
-        self.test = test
+    def __init__(self,data, transform = None, bigRAM = True):
         self.data = data.transpose()
         self.len = len(data)
         self.transform = transform
-        self.imgs = self.data[0]
+        self.imgs_path = self.data[0]
         self.labels = self.data[1]
+        self.bigRAM = bigRAM
+        if self.bigRAM:
+            print('Wow Big RAM')
+            self.imgs_cache = []
+            for img_path in tqdm(self.imgs_path):
+                img = cv2.imread(img_path)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                img = cv2.resize(img, (MyConfigs.img_width, MyConfigs.img_height))
+                img = torch.tensor(img).permute(2,0,1) / 255.0
+                self.imgs_cache.append(img)
+        
     def __getitem__(self,index):
-        if self.test:
-            filename = self.imgs[index]
-            filename = filename
-            img_path = self.imgs[index]
-            img = cv2.imread(img_path)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            img = cv2.resize(img, (config.img_width, config.img_height))
-            img = transforms.ToTensor()(img)
-            return img,filename
+        label = int(self.labels[index])
+        if self.bigRAM:
+            img = self.imgs_cache[index]
         else:
-            img_path = self.imgs[index]
-            label = self.labels[index]
-            label = int(label)
+            img_path = self.imgs_path[index]
             img = cv2.imread(img_path)
             img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-            img = cv2.resize(img,(config.img_width,config.img_height))
-            # img = transforms.ToTensor()(img)
-
-            if self.transform is not None:
-                img = Image.fromarray(img)
-                img = self.transform(img)
-
-            else:
-                img = transforms.ToTensor()(img)
-            return img,label
-
+            img = cv2.resize(img,(MyConfigs.img_width,MyConfigs.img_height))
+            img = torch.tensor(img).permute(2,0,1) / 255.0
+        if self.transform is not None:
+            img = self.transform(img)
+        return img, label
+    
     def __len__(self):
         return self.len
 
@@ -76,11 +65,11 @@ def collate_fn(batch):
     return torch.stack(imgs, 0),label
 
 if __name__ == '__main__':
-    test_data,_ = get_files(config.data_folder,0.2)
+    test_data,_ = get_files(MyConfigs.data_folder,0.02)
     for i in (test_data):
         print(i)
     print(len(test_data))
-
-    transform = transforms.Compose([transforms.ToTensor()])
-    data = datasets(test_data,transform = transform)
-    #print(data[0])
+    transforms = transforms.Compose([transforms.ColorJitter(0.05,0.05,0.05),])
+    data = datasets(test_data, transform = transforms)
+    test_item = data[0]
+    print(f'tensor: {test_item[0]}, label: {MyConfigs.classes[test_item[1]]}')
