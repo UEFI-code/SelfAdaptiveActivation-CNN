@@ -8,7 +8,6 @@ class MyConfigs():
     batch_size = 16
     img_height = 128
     img_width = 128
-    num_classes = 4
     lr = 0.001
     lr_decay = 0.000001
     weight_decay = 2e-4
